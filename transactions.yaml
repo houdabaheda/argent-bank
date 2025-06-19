@@ -1,401 +1,274 @@
 openapi: 3.0.3
 info:
-    title: Bank Argent API documentation
-    description: Contains all available API endpoints in this codebase.
-    version: 1.0.0
-    termsOfService: 'http://swagger.io/terms/'
+  title: Bank Argent API documentation
+  description: Contains all available API endpoints in this codebase.
+  version: 1.0.0
+  termsOfService: 'http://swagger.io/terms/'
 servers:
-    - url: http://localhost:3001/api/v1
-      description: Local development server
-
+  - url: http://localhost:3001/api/v1
+    description: Local development server
 tags:
-    - name: Users
-      description: Endpoints related to managing users.
-    - name: Transactions
-      description: Endpoints related to managing transactions.
-
+  - name: Users
+    description: Endpoints related to managing users.
+  - name: Transactions
+    description: Endpoints related to managing transactions.
 paths:
-    /user/login:
-        post:
-            tags:
-                - Users
-            summary: Login
-            description: API for Login
-            requestBody:
-                required: true
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/Login'
-            responses:
-                '200':
-                    description: Login successfully
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/LoginResponse'
-                '400':
-                    description: Invalid fields
-                '500':
-                    description: Internal server error
+  /user/login:
+    post:
+      tags:
+        - Users
+      summary: Login
+      description: API for Login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Login'
+      responses:
+        '200':
+          description: Login successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        '400':
+          description: Invalid fields
+        '500':
+          description: Internal server error
 
-    /user/signup:
-        post:
-            tags:
-                - Users
-            summary: Signup
-            description: API for Signup
-            requestBody:
-                required: true
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/User'
-            responses:
-                '200':
-                    description: Signup successfully
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/ApiResponse'
-                '400':
-                    description: Invalid fields
-                '500':
-                    description: Internal server error
+  /user/signup:
+    post:
+      tags:
+        - Users
+      summary: Signup
+      description: API for Signup
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '200':
+          description: Signup successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+        '400':
+          description: Invalid fields
+        '500':
+          description: Internal server error
 
-    /user/profile:
-        post:
-            security:
-                - BearerAuth: []
-            tags:
-                - Users
-            summary: Fetch user profile
-            description: API for retrieving user profile
-            responses:
-                '200':
-                    description: User profile retrieved successfully
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/ApiResponse'
-                '400':
-                    description: Invalid fields
-                '500':
-                    description: Internal server error
-        put:
-            security:
-                - BearerAuth: []
-            tags:
-                - Users
-            summary: Update user profile
-            description: API for updating user profile attributes
-            requestBody:
-                required: true
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/UserProfile'
-            responses:
-                '200':
-                    description: User profile updated successfully
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/ApiResponse'
-                '400':
-                    description: Invalid fields
-                '500':
-                    description: Internal server error
+  /user/profile:
+    post:
+      security:
+        - BearerAuth: []
+      tags:
+        - Users
+      summary: Fetch user profile
+      description: API for retrieving user profile
+      responses:
+        '200':
+          description: User profile retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+        '400':
+          description: Invalid fields
+        '500':
+          description: Internal server error
+    put:
+      security:
+        - BearerAuth: []
+      tags:
+        - Users
+      summary: Update user profile
+      description: API for updating user profile attributes
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserProfile'
+      responses:
+        '200':
+          description: User profile updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+        '400':
+          description: Invalid fields
+        '500':
+          description: Internal server error
 
-    /transactions:
-        get:
-            tags:
-                - Transactions
-            summary: Retrieve all transactions for a specific account and month.
-            description: Fetch transactions for a given account, filtered by month and year.
-            parameters:
-                - name: accountId
-                  in: query
-                  description: The ID of the account to fetch transactions for.
-                  required: true
-                  schema:
-                      type: string
-                - name: month
-                  in: query
-                  description: The month to filter transactions (e.g., January = 1).
-                  required: true
-                  schema:
-                      type: integer
-                      format: int32
-                      minimum: 1
-                      maximum: 12
-                - name: year
-                  in: query
-                  description: The year to filter transactions.
-                  required: true
-                  schema:
-                      type: integer
-                - name: page
-                  in: query
-                  description: The page number for pagination (optional).
-                  required: false
-                  schema:
-                      type: integer
-                  example: 1
-                - name: limit
-                  in: query
-                  description: The number of transactions per page (optional).
-                  required: false
-                  schema:
-                      type: integer
-                  example: 10
-            responses:
-                '200':
-                    description: A list of transactions for the specified month and account.
-                    content:
-                        application/json:
-                            schema:
-                                type: object
-                                properties:
-                                    total:
-                                        type: integer
-                                        description: Total number of transactions.
-                                    page:
-                                        type: integer
-                                        description: Current page of the results.
-                                    limit:
-                                        type: integer
-                                        description: Number of transactions per page.
-                                    transactions:
-                                        type: array
-                                        items:
-                                            $ref: '#/components/schemas/Transaction'
-                '400':
-                    description: Invalid query parameters.
-                '404':
-                    description: Account not found.
-                '500':
-                    description: Server error.
-        post:
-            tags:
-                - Transactions
-            summary: Create a new transaction
-            requestBody:
-                required: true
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/Transaction'
-            responses:
-                '201':
-                    description: Transaction created successfully
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/Transaction'
-                '400':
-                    description: Invalid input data
-                '500':
-                    description: Server error
+  /transactions:
+    get:
+      tags:
+        - Transactions
+      summary: Retrieve all transactions for a specific month
+      description: Fetch transactions for a given month and year
+      parameters:
+        - name: month
+          in: query
+          required: true
+          schema:
+            type: integer
+        - name: year
+          in: query
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: List of transactions
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  total:
+                    type: integer
+                  transactions:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Transaction'
+        '400':
+          description: Invalid parameters
+        '500':
+          description: Server error
 
-    /transactions/{transactionId}:
-        get:
-            tags:
-                - Transactions
-            summary: Retrieve details of a specific transaction
-            parameters:
-                - name: transactionId
-                  in: path
-                  description: The unique ID of the transaction
-                  required: true
-                  schema:
-                      type: string
-            responses:
-                '200':
-                    description: Transaction details retrieved
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/Transaction'
-                '404':
-                    description: Transaction not found
-                '500':
-                    description: Server error
-        put:
-            tags:
-                - Transactions
-            summary: Update an existing transaction
-            parameters:
-                - name: transactionId
-                  in: path
-                  description: The unique ID of the transaction to update
-                  required: true
-                  schema:
-                      type: string
-            requestBody:
-                required: true
-                content:
-                    application/json:
-                        schema:
-                            type: object
-                            properties:
-                                amount:
-                                    type: number
-                                    format: float
-                                    description: Updated transaction amount
-                                description:
-                                    type: string
-                                    description: Updated transaction description
-                                category:
-                                    type: string
-                                    description: Updated transaction category
-                                notes:
-                                    type: string
-                                    description: Additional notes for the transaction
-            responses:
-                '200':
-                    description: Transaction updated successfully
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/Transaction'
-                '400':
-                    description: Invalid input data
-                '404':
-                    description: Transaction not found
-                '500':
-                    description: Server error
-        delete:
-            tags:
-                - Transactions
-            summary: Delete a specific transaction or remove category/notes
-            description: Deletes a transaction entirely or removes only category/notes if specified.
-            parameters:
-                - name: transactionId
-                  in: path
-                  description: The unique ID of the transaction to delete
-                  required: true
-                  schema:
-                      type: string
-                - name: removeFields
-                  in: query
-                  description: Optional parameter to specify if only category/notes should be removed instead of full deletion
-                  required: false
-                  schema:
-                      type: string
-                      enum: [category, notes, all]
-            responses:
-                '200':
-                    description: Transaction or specified fields deleted successfully
-                '404':
-                    description: Transaction not found
-                '500':
-                    description: Server error
+  /transactions/{transactionId}:
+    get:
+      tags:
+        - Transactions
+      summary: Get transaction details
+      parameters:
+        - name: transactionId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Transaction details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Transaction'
+        '404':
+          description: Not found
+
+    put:
+      tags:
+        - Transactions
+      summary: Update transaction category and/or notes
+      parameters:
+        - name: transactionId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                category:
+                  type: string
+                  example: Shopping
+                notes:
+                  type: string
+                  example: Gift for birthday
+      responses:
+        '200':
+          description: Transaction updated
+        '400':
+          description: Invalid input
+        '404':
+          description: Not found
 
 components:
-    securitySchemes:
-        BearerAuth:
-            type: http
-            scheme: bearer
-            bearerFormat: JWT
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
 
-    schemas:
-        User:
-            type: object
-            description: Schema representing a user.
-            properties:
-                email:
-                    type: string
-                    description: The email address of the user.
-                password:
-                    type: string
-                    description: The password of the user.
-                firstName:
-                    type: string
-                    description: The first name of the user.
-                lastName:
-                    type: string
-                    description: The last name of the user.
+  schemas:
+    User:
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
 
-        Login:
-            type: object
-            description: Schema for user login.
-            properties:
-                email:
-                    type: string
-                    description: The email address used for login.
-                password:
-                    type: string
-                    description: The password used for login.
+    Login:
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
 
-        ApiResponse:
-            type: object
-            description: Generic API response schema.
-            properties:
-                status:
-                    type: integer
-                    description: The status code of the API response.
-                message:
-                    type: string
-                    description: A message describing the outcome of the operation.
-                body:
-                    type: object
-                    description: The data returned by the API.
+    LoginResponse:
+      type: object
+      properties:
+        token:
+          type: string
 
-        LoginResponse:
-            type: object
-            description: Schema for the response after a successful login.
-            properties:
-                token:
-                    type: string
-                    description: The JWT token issued upon successful login.
+    ApiResponse:
+      type: object
+      properties:
+        status:
+          type: integer
+        message:
+          type: string
+        body:
+          type: object
 
-        UserProfile:
-            type: object
-            description: Schema for user profile updates.
-            properties:
-                firstName:
-                    type: string
-                    description: The updated first name of the user.
-                lastName:
-                    type: string
-                    description: The updated last name of the user.
+    UserProfile:
+      type: object
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
 
-        Transaction:
-            type: object
-            description: Schema representing a transaction.
-            properties:
-                id:
-                    type: string
-                    description: The unique identifier of the transaction.
-                date:
-                    type: string
-                    format: date
-                    description: The date when the transaction occurred.
-                description:
-                    type: string
-                    description: A brief description of the transaction.
-                amount:
-                    type: number
-                    format: float
-                    description: The monetary amount of the transaction.
-                accountId:
-                    type: string
-                    description: The ID of the account associated with the transaction.
-                category:
-                    type: string
-                    description: The category of the transaction (e.g., Food, Rent, Entertainment).
-                    enum:
-                        - Food
-                        - Rent
-                        - Entertainment
-                        - Transportation
-                        - Health
-                        - Shopping
-                        - Bills
-                        - Other
-                    example: Food
-                notes:
-                    type: string
-                    description: Additional notes related to the transaction.
-                    example: 'Dinner at a restaurant'
+    Transaction:
+      type: object
+      properties:
+        id:
+          type: string
+        date:
+          type: string
+          format: date
+        description:
+          type: string
+        amount:
+          type: number
+        accountId:
+          type: string
+        category:
+          type: string
+          enum:
+            - Food
+            - Rent
+            - Entertainment
+            - Transportation
+            - Health
+            - Shopping
+            - Bills
+            - Other
+        notes:
+          type: string
