@@ -105,13 +105,20 @@ paths:
         '500':
           description: Internal server error
 
-  /transactions:
+  /transactions/{accountId}:
     get:
+      security:
+        - BearerAuth: []
       tags:
         - Transactions
-      summary: Retrieve all transactions for a specific month
-      description: Fetch transactions for a given month and year
+      summary: Retrieve all transactions for a specific account and month
+      description: Fetch transactions for a given account, month, and year
       parameters:
+        - name: accountId
+          in: path
+          required: true
+          schema:
+            type: string
         - name: month
           in: query
           required: true
@@ -141,12 +148,19 @@ paths:
         '500':
           description: Server error
 
-  /transactions/{transactionId}:
+  /transactions/{accountId}/{transactionId}:
     get:
+      security:
+        - BearerAuth: []
       tags:
         - Transactions
-      summary: Get transaction details
+      summary: Get transaction details for a specific account
       parameters:
+        - name: accountId
+          in: path
+          required: true
+          schema:
+            type: string
         - name: transactionId
           in: path
           required: true
@@ -163,10 +177,17 @@ paths:
           description: Not found
 
     put:
+      security:
+        - BearerAuth: []
       tags:
         - Transactions
-      summary: Update transaction category and/or notes
+      summary: Update transaction category and/or notes for a specific account
       parameters:
+        - name: accountId
+          in: path
+          required: true
+          schema:
+            type: string
         - name: transactionId
           in: path
           required: true
